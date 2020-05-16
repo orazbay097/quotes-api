@@ -73,7 +73,7 @@ app.put('/', async function (req, res) {
 app.delete('/:index', async function (req, res) {
     try {
         const arr = await readFile(req.session.id)
-        arr.splice(req.params.index)
+        arr.splice(Number(req.params.index),1)
         await writeFile(req.session.id, arr)
         successHandler(res, {})
 
