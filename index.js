@@ -10,7 +10,7 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Credentials", true);
     res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
     next();
-  });
+});
 
 app.use(express.json({ limit: "50mb" }))
 app.use(
@@ -57,7 +57,7 @@ app.put('/', async function (req, res) {
         if (!req.body.text) throw Error("Нет цитаты")
         const arr = await readFile(req.session.id)
         if (arr.length < 10) {
-            arr.push(req.body.text)
+            arr.push(req.body)
             await writeFile(req.session.id, arr)
             successHandler(res, {})
         } else {
@@ -70,10 +70,10 @@ app.put('/', async function (req, res) {
     }
 })
 
-app.delete('/:index', async function (req, res) {
+app.delete('/:id', async function (req, res) {
     try {
         const arr = await readFile(req.session.id)
-        arr.splice(Number(req.params.index),1)
+        arr.splice(arr.findIndex(i => i.id == req.params.id),1)
         await writeFile(req.session.id, arr)
         successHandler(res, {})
 
@@ -81,9 +81,6 @@ app.delete('/:index', async function (req, res) {
         errorHandler(res, e.message)
     }
 })
-
-
-
 
 
 app.listen(8080)
